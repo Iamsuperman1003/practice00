@@ -46,7 +46,7 @@ public class DeptServlet extends HttpServlet {
 
             try {
                 // 1.接收請求參數
-                Integer deptno = new Integer(req.getParameter("deptno"));
+                Integer deptno = Integer.valueOf(req.getParameter("deptno"));
 
                 // 2.開始查詢資料
                 DeptService deptService = new DeptServiceImpl();
@@ -80,7 +80,7 @@ public class DeptServlet extends HttpServlet {
 
             try {
                 // 1.接收請求參數
-                Integer deptno = new Integer(req.getParameter("deptno"));
+                Integer deptno = Integer.valueOf(req.getParameter("deptno"));
 
                 // 2.開始查詢資料
                 DeptServiceImpl deptService = new DeptServiceImpl();
@@ -107,7 +107,7 @@ public class DeptServlet extends HttpServlet {
 
             try {
                 // 1.接收請求參數 - 輸入格式的錯誤處理
-                Integer deptno = new Integer(req.getParameter("deptno").trim());
+                Integer deptno = Integer.valueOf(req.getParameter("deptno").trim());
 
                 String dname = req.getParameter("dname");
                 if (dname == null || dname.trim().length() == 0) {
@@ -162,7 +162,7 @@ public class DeptServlet extends HttpServlet {
 
             try {
                 // 1.接收請求參數
-                Integer deptno = new Integer(req.getParameter("deptno"));
+                Integer deptno = Integer.valueOf(req.getParameter("deptno"));
 
                 // 2.開始刪除資料
                 DeptService deptService = new DeptServiceImpl();

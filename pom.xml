@@ -15,6 +15,7 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <lombok.version>1.18.12</lombok.version>
     </properties>
 
     <dependencies>
@@ -48,8 +49,8 @@
 
     <!-- MySQL JDBC Driver -->
     <dependency>
-        <groupId>mysql</groupId>
-        <artifactId>mysql-connector-java</artifactId>
+        <groupId>com.mysql</groupId>
+        <artifactId>mysql-connector-j</artifactId>
         <version>8.0.33</version>
     </dependency>
 
@@ -60,7 +61,27 @@
         <version>4.13.2</version>
         <scope>test</scope>
     </dependency>
-</dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- JPA API -->
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+
+        <!-- Hibernate 實作 -->
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>6.2.6.Final</version>
+        </dependency>
+
+    </dependencies>
 
 
     <build>

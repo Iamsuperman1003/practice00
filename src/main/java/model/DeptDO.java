@@ -1,28 +1,31 @@
 package model;
 
-import java.io.Serializable;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.io.Serializable;
+import java.util.List;
+
+
+@Getter
+@Setter
+@Table(name = "dept2")
+@Entity
+@NamedQuery(name = "dept.all", query = "SELECT dept FROM DeptDO  dept")
 public class DeptDO implements Serializable {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "DEPTNO", nullable = false)
     private Integer deptno;
+
+	@Column(name= "DNAME")
     private String dname;
+
+	@Column(name = "loc")
     private String loc;
     
-	public Integer getDeptno() {
-		return deptno;
-	}
-	public void setDeptno(Integer deptno) {
-		this.deptno = deptno;
-	}
-	public String getDname() {
-		return dname;
-	}
-	public void setDname(String dname) {
-		this.dname = dname;
-	}
-	public String getLoc() {
-		return loc;
-	}
-	public void setLoc(String loc) {
-		this.loc = loc;
-	}
+	@OneToMany(mappedBy = "deptDO",cascade = CascadeType.REMOVE)
+	private List<EmpDO> empDOs;
 }
