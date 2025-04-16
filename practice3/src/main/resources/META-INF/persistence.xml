@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1"
+             xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+    <persistence-unit name="jpa-pu" transaction-type="RESOURCE_LOCAL">
+        <!-- 使用 Hibernate 作為 JPA 實作 -->
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+        <class>model.DeptDO</class>
+        <class>model.EmpDO</class>
+
+        <properties>
+            <!-- database connection information -->
+            <property name="hibernate.connection.driver_class" value="com.mysql.cj.jdbc.Driver"/>
+            <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/practice"/>
+            <property name="hibernate.connection.username" value="sa"/>
+            <property name="hibernate.connection.password" value="123456"/>
+
+            <!-- SQL方言 -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
+            <!-- 是否要顯示實際操作資料庫時的SQL -->
+            <property name="hibernate.show_sql" value="true"/>
+            <!-- 是否要格式化操作資料庫時的SQL -->
+            <property name="hibernate.format_sql" value="true"/>
+            <!-- 依照 entity annotation 自動建立 schema, value: none, update, create, create-drop -->
+            <!-- <property name="hibernate.hbm2ddl.auto" value="update" />-->
+        </properties>
+    </persistence-unit>
+</persistence>
