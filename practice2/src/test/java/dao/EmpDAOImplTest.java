@@ -2,9 +2,9 @@ package dao;
 
 import static org.junit.Assert.*;
 
+import model.DeptDO;
 import org.junit.Before;
 import org.junit.Test;
-import dao.EmpDAO;
 import dao.impl.EmpDAOImpl;
 import model.EmpDO;
 
@@ -28,7 +28,9 @@ public class EmpDAOImplTest {
         emp.setHiredate(LocalDate.parse("2020-04-01"));
         emp.setSal(50000.0);
         emp.setComm(500.0);
-        emp.setDeptno(10);
+        DeptDO deptDO = new DeptDO();
+        deptDO.setDeptno(10);
+        emp.setDeptDO(deptDO);
 
         dao.insert(emp);
         assertTrue(emp.getEmpno() > 0);
@@ -43,7 +45,9 @@ public class EmpDAOImplTest {
         emp.setHiredate(LocalDate.parse("1981-01-09"));
         emp.setSal(2450.0);
         emp.setComm(0.0);
-        emp.setDeptno(10);
+        DeptDO deptDO = new DeptDO();
+        deptDO.setDeptno(20);
+        emp.setDeptDO(deptDO);
 
         dao.update(emp);
         EmpDO updated = dao.findByPrimaryKey(3);

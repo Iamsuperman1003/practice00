@@ -17,38 +17,13 @@ public class EmpServiceImpl implements EmpService {
     }
 
     @Override
-    public EmpDO addEmp(String ename, String job, LocalDate hiredate,
-                        Double sal, Double comm, Integer deptno) {
-
-        EmpDO empDO = new EmpDO();
-
-        empDO.setEname(ename);
-        empDO.setJob(job);
-        empDO.setHiredate(hiredate);
-        empDO.setSal(sal);
-        empDO.setComm(comm);
-        empDO.setDeptno(deptno);
-        dao.insert(empDO);
-
-        return empDO;
+    public EmpDO addEmp(String ename, String job, LocalDate hiredate, Double sal, Double comm, Integer deptno) {
+        return null;
     }
 
     @Override
-    public EmpDO updateEmp(Integer empno, String ename, String job,
-                           LocalDate hiredate, Double sal, Double comm, Integer deptno) {
-
-        EmpDO empDO = new EmpDO();
-
-        empDO.setEmpno(empno);
-        empDO.setEname(ename);
-        empDO.setJob(job);
-        empDO.setHiredate(hiredate);
-        empDO.setSal(sal);
-        empDO.setComm(comm);
-        empDO.setDeptno(deptno);
-        dao.update(empDO);
-
-        return dao.findByPrimaryKey(empno);
+    public EmpDO updateEmp(Integer empno, String ename, String job, LocalDate hiredate, Double sal, Double comm, Integer deptno) {
+        return null;
     }
 
     @Override
