@@ -6,24 +6,42 @@ import java.util.List;
 import dao.EmpDAO;
 import dao.impl.EmpDAOImpl;
 import model.EmpDO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import service.EmpService;
 
+@Service
+@Transactional
 public class EmpServiceImpl implements EmpService {
+
 
     private EmpDAO dao;
 
-    public EmpServiceImpl() {
-        dao = new EmpDAOImpl();
+    @Autowired
+    public EmpServiceImpl(EmpDAO dao) {
+        this.dao = dao;
+    }
+
+
+    @Override
+    public EmpDO addEmp(EmpDO empDO) {
+        dao.insert(empDO);
+        return empDO;
     }
 
     @Override
-    public EmpDO addEmp(String ename, String job, LocalDate hiredate, Double sal, Double comm, Integer deptno) {
-        return null;
-    }
-
-    @Override
-    public EmpDO updateEmp(Integer empno, String ename, String job, LocalDate hiredate, Double sal, Double comm, Integer deptno) {
-        return null;
+    public EmpDO updateEmp(EmpDO empDO) {
+        EmpDO empDO1 = dao.findByPrimaryKey(empDO.getEmpno());
+        if (empDO1 != null) {
+            empDO1.setEname(empDO.getEname());
+            empDO1.setJob(empDO.getJob());
+            empDO1.setHiredate(empDO.getHiredate());
+            empDO1.setSal(empDO.getSal());
+            empDO1.setComm(empDO.getComm());
+            dao.update(empDO1);
+        }
+        return empDO1;
     }
 
     @Override

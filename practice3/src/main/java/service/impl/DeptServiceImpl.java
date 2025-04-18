@@ -3,17 +3,23 @@ package service.impl;
 import java.util.List;
 
 import dao.DeptDAO;
-import dao.impl.DeptDAOImpl;
+
 import model.DeptDO;
 import model.EmpDO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import service.DeptService;
 
+@Service
 public class DeptServiceImpl implements DeptService {
+
 
     private DeptDAO dao;
 
-    public DeptServiceImpl() {
-        dao = new DeptDAOImpl();
+    @Autowired
+    public DeptServiceImpl(DeptDAO dao) {
+        this.dao = dao;
     }
 
     @Override
@@ -22,18 +28,20 @@ public class DeptServiceImpl implements DeptService {
     }
 
     @Override
-    public DeptDO getOneDept(Integer deptno) {
+    public  DeptDO getOneDept(Integer deptno){
         return dao.findByPrimaryKey(deptno);
     }
 
     @Override
-    public DeptDO update(Integer deptno, String dname, String loc) {
-        DeptDO deptDO = new DeptDO();
-        deptDO.setDeptno(deptno);
-        deptDO.setDname(dname);
-        deptDO.setLoc(loc);
-        dao.update(deptDO);
-        return dao.findByPrimaryKey(deptno);
+    @Transactional
+    public DeptDO update(DeptDO deptDO) {
+        DeptDO daoDo = dao.findByPrimaryKey(deptDO.getDeptno());
+        if (daoDo != null) {
+            daoDo.setDname(deptDO.getDname());
+            daoDo.setLoc(deptDO.getLoc());
+            dao.update(daoDo);
+        }
+        return daoDo;
     }
 
     @Override
@@ -42,8 +50,8 @@ public class DeptServiceImpl implements DeptService {
     }
 
     @Override
+    @Transactional
     public void deleteDept(Integer deptno) {
         dao.delete(deptno);
     }
-
 }

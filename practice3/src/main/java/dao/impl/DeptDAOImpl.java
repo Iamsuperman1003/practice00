@@ -1,105 +1,96 @@
 package dao.impl;
 
+import java.security.PublicKey;
+import java.util.ArrayList;
 import java.util.List;
 
 
 import dao.DeptDAO;
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import model.DeptDO;
 import model.EmpDO;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import utils.JPAUtil;
 
+@Repository
+@Transactional
 public class DeptDAOImpl implements DeptDAO {
 
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public void insert(DeptDO deptDO) {
-        EntityManager entityManager = JPAUtil.getEntityManagerFactory().createEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
-        try {
-            transaction.begin();
-            entityManager.persist(deptDO);
-            transaction.commit();
-            entityManager.close();
-        } catch (Exception e) {
-            transaction.rollback();
-            e.printStackTrace();
-        }
+        entityManager.persist(deptDO);
     }
 
     @Override
     public void update(DeptDO deptDO) {
-        EntityManager entityManager = JPAUtil.getEntityManagerFactory().createEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
         DeptDO deptDO1 = entityManager.find(DeptDO.class, deptDO.getDeptno());
         if (deptDO1 != null) {
-            try {
-                transaction.begin();
-                deptDO1.setDeptno(deptDO.getDeptno());
-                deptDO1.setDname(deptDO.getDname());
-                deptDO1.setLoc(deptDO.getLoc());
-                transaction.commit();
-            } catch (Exception e) {
-                transaction.rollback();
-                e.printStackTrace();
-            }finally {
-                if (entityManager.isOpen()) {
-                    entityManager.close();
-                }
-
-            }
+            deptDO1.setDeptno(deptDO.getDeptno());
+            deptDO1.setDname(deptDO.getDname());
+            deptDO1.setLoc(deptDO.getLoc());
         }
 
     }
 
     @Override
     public void delete(Integer deptno) {
-        EntityManager entityManager = JPAUtil.getEntityManagerFactory().createEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
-        try {
-            transaction.begin();
-            DeptDO deptDO = entityManager.find(DeptDO.class, deptno);
-            entityManager.remove(deptDO);
-            transaction.commit();
-        } catch (Exception e) {
-            transaction.rollback();
-            e.printStackTrace();
-        } finally {
-            if (entityManager.isOpen()) {
-                entityManager.close();
-            }
-        }
+        DeptDO deptDO = entityManager.find(DeptDO.class, deptno);
+        entityManager.remove(deptDO);
     }
 
     @Override
     public DeptDO findByPrimaryKey(Integer deptno) {
-        EntityManager entityManager = JPAUtil.getEntityManagerFactory().createEntityManager();
-        return entityManager.find(DeptDO.class, deptno);
+      return entityManager.find(DeptDO.class, deptno);
     }
 
     @Override
     public List<DeptDO> getAll() {
-        EntityManager entityManager = JPAUtil.getEntityManagerFactory().createEntityManager();
-        //Name Query
-        TypedQuery<DeptDO> query = entityManager.createNamedQuery("dept.all", DeptDO.class);
-        //JPQL Query
-//        Query query = entityManager.createQuery("SELECT dept FROM DeptDO dept");
-        //Native Query
-//        Query query = entityManager.createNativeQuery("SELECT * FROM dept2", DeptDO.class);
+        Query query = entityManager.createNamedQuery("dept.all");
         return query.getResultList();
     }
 
     @Override
     public List<EmpDO> getEmpsByDeptno(Integer deptno) {
-        EntityManager entityManager = JPAUtil.getEntityManagerFactory().createEntityManager();
-        // FETCH: 一次查出一方及多方，而非預設的 Lazy Loading（先查一方，等到要使用到多方的屬性時，才再發送 sql 至資料庫中查詢多方）
-        TypedQuery<DeptDO> query =
-                entityManager.createQuery("SELECT dept FROM DeptDO dept LEFT JOIN FETCH dept.empDOs WHERE dept.deptno = :deptno", DeptDO.class);
-        query.setParameter("deptno", deptno);
-        DeptDO deptDO = query.getSingleResult();
+        DeptDO deptDO = entityManager.createQuery("SELECT d FROM DeptDO d LEFT JOIN FETCH d.empDOs WHERE d.deptno = :deptno", DeptDO.class)
+                .setParameter("deptno", deptno).getSingleResult();
         return deptDO.getEmpDOs();
     }
 
+
+    @Override
+    public List<DeptDO> findByCriteria(DeptDO deptDO) {
+        //建立Criteria 工具
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<DeptDO> cq = cb.createQuery(DeptDO.class);
+        Root<DeptDO> root = cq.from(DeptDO.class);
+
+        //建立條件清單
+        ArrayList<Predicate> predicates = new ArrayList<>();
+
+        if (deptDO.getDeptno() != null) {
+            predicates.add(cb.equal(root.get("deptno"), deptDO.getDeptno()));
+        }
+
+        if (deptDO.getDname() != null) {
+            predicates.add(cb.like(root.get("dname"), "%" + deptDO.getDname() + "%"));
+        }
+
+        if (deptDO.getLoc() != null) {
+            predicates.add(cb.like(root.get("loc"), "%" + deptDO.getLoc() + "%"));
+        }
+
+        cq.where(cb.and(predicates.toArray(new Predicate[0])));
+        return entityManager.createQuery(cq).getResultList();
+
+    }
 
 
 }

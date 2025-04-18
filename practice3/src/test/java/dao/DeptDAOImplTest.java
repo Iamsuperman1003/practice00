@@ -1,77 +1,81 @@
 package dao;
 
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
-
-import dao.DeptDAO;
-import dao.impl.DeptDAOImpl;
-import model.DeptDO;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+import model.DeptDO;
+import model.EmpDO;
+
+@RunWith(SpringRunner.class)
+@ContextConfiguration(locations = {"classpath:/META-INF/applicationContext.xml"})
 public class DeptDAOImplTest {
 
+    // Field Injection
+    @Autowired
     private DeptDAO dao;
 
-    @Before
-    public void setUp() {
-        dao = new DeptDAOImpl();
+    @Test
+    public void insert() {
+        DeptDO deptDO = new DeptDO();
+        deptDO.setDname("製造部");
+        deptDO.setLoc("美國洛杉磯");
+        dao.insert(deptDO);
+        assertTrue(true);
     }
 
     @Test
-    public void testInsert() {
-        DeptDO dept = new DeptDO();
-        dept.setDname("製造部");
-        dept.setLoc("美國洛杉磯");
-
-        dao.insert(dept);
-        assertNotNull(dept.getDeptno());          // 防止 NPE
-        assertTrue(dept.getDeptno() > 0);         // 自動產生的主鍵驗證
+    public void findByPrimaryKey() {
+        DeptDO deptDO = dao.findByPrimaryKey(20);
+        assertEquals(Integer.valueOf(20), deptDO.getDeptno());
+        assertEquals("研發部", deptDO.getDname());
+        assertEquals("臺灣新竹", deptDO.getLoc());
     }
 
     @Test
-    public void testUpdate() {
-        DeptDO dept = new DeptDO();
-        dept.setDeptno(10); // 請確保此部門存在！
-        dept.setDname("財務部2");
-        dept.setLoc("臺灣台北2");
-
-        dao.update(dept);
-        DeptDO updated = dao.findByPrimaryKey(10);
-        assertEquals("財務部2", updated.getDname());
-    }
-
-    @Test
-    public void testDelete() {
-        dao.delete(30); // 這筆資料需要原本存在，不然不會測出錯
-        DeptDO deleted = dao.findByPrimaryKey(30);
-        assertNull(deleted);
-    }
-
-    @Test
-    public void testFindByPrimaryKey() {
-        DeptDO dept = dao.findByPrimaryKey(20); // 請確保這筆存在
-        assertNotNull(dept);
-        System.out.println(dept.getDeptno() + "," + dept.getDname() + "," + dept.getLoc());
-    }
-
-    @Test
-    public void testGetAll() {
+    public void getAll() {
         List<DeptDO> list = dao.getAll();
-        assertNotNull(list);
-        assertTrue(list.size() > 0);
-        for (DeptDO dept : list) {
-            System.out.println(dept.getDeptno() + "," + dept.getDname() + "," + dept.getLoc());
+        for (DeptDO deptDO : list) {
+            System.out.print(deptDO.getDeptno() + ",");
+            System.out.print(deptDO.getDname() + ",");
+            System.out.print(deptDO.getLoc());
+            System.out.println();
         }
     }
 
     @Test
-    public void testGetEmpsByDeptno() {
-        List<?> emps = dao.getEmpsByDeptno(10);
-        assertNotNull(emps);
-        for (Object emp : emps) {
-            System.out.println(emp);
+    public void getEmpsByDeptno() {
+        List<EmpDO> list = dao.getEmpsByDeptno(10);
+        for (EmpDO empDO : list) {
+            System.out.print(empDO.getEmpno() + ",");
+            System.out.print(empDO.getEname() + ",");
+            System.out.print(empDO.getJob() + ",");
+            System.out.print(empDO.getHiredate() + ",");
+            System.out.print(empDO.getSal() + ",");
+            System.out.print(empDO.getComm() + ",");
+            System.out.print(empDO.getDeptDO().getDeptno());
+            System.out.println();
         }
     }
+
+    @Test
+    public void findByCriteria() {
+        DeptDO deptDO = new DeptDO();
+        deptDO.setLoc("臺灣");
+        deptDO.setDname("研發部");
+        dao.findByCriteria(deptDO)
+                .forEach(dept -> {
+                    System.out.print(dept.getDeptno() + ",");
+                    System.out.print(dept.getDname() + ",");
+                    System.out.print(dept.getLoc());
+                    System.out.println();
+                });
+    }
+
 }

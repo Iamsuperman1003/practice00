@@ -13,99 +13,59 @@ import java.util.List;
 import java.sql.Statement;
 
 import dao.EmpDAO;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.Query;
-import jakarta.persistence.TypedQuery;
+import jakarta.persistence.*;
 import model.DeptDO;
 import model.EmpDO;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import utils.JPAUtil;
 
+
+@Repository
+@Transactional
 public class EmpDAOImpl implements EmpDAO {
+
+    @PersistenceContext
+    protected  EntityManager entityManager;
 
     @Override
     public void insert(EmpDO empDO) {
-        EntityManager entityManager = JPAUtil.getEntityManagerFactory().createEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
-        try {
-            transaction.begin();
-            entityManager.persist(empDO);
-            transaction.commit();
-        } catch (Exception e) {
-            transaction.rollback();
-            e.printStackTrace();
-        } finally {
-            if (entityManager.isOpen()) {
-                entityManager.close();
-            }
-        }
-
+        entityManager.persist(empDO);
     }
 
 
     @Override
     public void update(EmpDO empDO) {
-        EntityManager entityManager = JPAUtil.getEntityManagerFactory().createEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
         EmpDO empDO1 = entityManager.find(EmpDO.class, empDO.getEmpno());
         if (empDO1 != null) {
-            try {
-                transaction.begin();
-                empDO1.setEmpno(empDO.getEmpno());
-                empDO1.setEname(empDO.getEname());
-                empDO1.setJob(empDO.getJob());
-                empDO1.setHiredate(empDO.getHiredate());
-                empDO1.setSal(empDO.getSal());
-                empDO1.setComm(empDO.getComm());
-                empDO1.setDeptDO(empDO.getDeptDO());
-                transaction.commit();
-            }catch (Exception e) {
-                transaction.rollback();
-                e.printStackTrace();
-            }finally {
-                if (entityManager.isOpen()) {
-                    entityManager.close();
-                }
-            }
-
+            empDO1.setEmpno(empDO.getEmpno());
+            empDO1.setEname(empDO.getEname());
+            empDO1.setJob(empDO.getJob());
+            empDO1.setHiredate(empDO.getHiredate());
+            empDO1.setSal(empDO.getSal());
+            empDO1.setComm(empDO.getComm());
+            empDO1.setDeptDO(empDO.getDeptDO());
         }
+
 
     }
 
     @Override
     public void delete(Integer empno) {
-        EntityManager entityManager = JPAUtil.getEntityManagerFactory().createEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
         EmpDO empDO = entityManager.find(EmpDO.class, empno);
-        try{
-            transaction.begin();
+        if (empDO != null) {
             entityManager.remove(empDO);
-            transaction.commit();
-        }catch (Exception e) {
-            transaction.rollback();
-            e.printStackTrace();
-        }finally {
-            if (entityManager.isOpen()) {
-                entityManager.close();
-            }
         }
     }
 
     @Override
     public EmpDO findByPrimaryKey(Integer empno) {
-        EntityManager entityManager = JPAUtil.getEntityManagerFactory().createEntityManager();
-        return entityManager.find(EmpDO.class, empno);
+    return entityManager.find(EmpDO.class, empno);
     }
 
     @Override
     public List<EmpDO> getAll() {
-        EntityManager entityManager = JPAUtil.getEntityManagerFactory().createEntityManager();
-        //Name Query
-        TypedQuery<EmpDO> query = entityManager.createNamedQuery("emp.all", EmpDO.class);
-        //JPQL Query
-        //Query query = entityManager.createQuery("SELECT emp FROM EmpDO emp");
-        //Native Query
-        //Query query = entityManager.createNativeQuery("SELECT * FROM emp2", EmpDO.class);
+        Query query = entityManager.createNamedQuery("emp.all");
         return query.getResultList();
     }
     
