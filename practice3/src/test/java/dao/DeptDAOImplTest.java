@@ -17,7 +17,7 @@ import model.EmpDO;
 @ContextConfiguration(locations = {"classpath:/META-INF/applicationContext.xml"})
 public class DeptDAOImplTest {
 
-    // Field Injection
+
     @Autowired
     private DeptDAO dao;
 
