@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>IBM Emp</title>
+</head>
+<body>
+<div>
+    <h2>IBM Emp</h2>
+</div>
+
+<div>
+    <h3>員工資料查詢</h3>
+
+    <div th:if="${not #lists.isEmpty(errorMsgs)}">
+        <font color='red'>請修正以下錯誤:
+            <ul>
+                <li th:each="message : ${errorMsgs}" th:text="${message}"></li>
+            </ul>
+        </font>
+    </div>
+
+    <ul>
+        <!-- 查詢全部員工 -->
+        <li>
+            <a th:href="@{/emp/listAll}">List</a> all Emps.
+        </li>
+        <br>
+
+        <!-- 查詢員工 (輸入員工編號) -->
+        <li>
+            <form method="GET" th:action="@{/emp/getOne}">
+                <b>輸入員工編號 (如7001):</b>
+                <input type="text" name="empno">
+                <input type="submit" value="送出">
+            </form>
+        </li>
+
+        <!-- 查詢員工 (從員工編號下拉選擇) -->
+        <li>
+            <form method="GET" th:action="@{/emp/getOne}">
+                <b>選擇員工編號:</b>
+                <select size="1" name="empno">
+                    <option th:each="empVO : ${empVOs}" th:value="${empVO.empno}" th:text="${empVO.empno}"></option>
+                </select>
+                <input type="submit" value="送出">
+            </form>
+        </li>
+
+        <!-- 查詢員工 (從員工姓名下拉選擇) -->
+        <li>
+            <form method="GET" th:action="@{/emp/getOne}">
+                <b>選擇員工姓名:</b>
+                <select size="1" name="empno">
+                    <option th:each="empVO : ${empVOs}" th:value="${empVO.empno}" th:text="${empVO.ename}"></option>
+                </select>
+                <input type="submit" value="送出">
+            </form>
+        </li>
+
+        <!-- 查詢某部門的員工 -->
+        <li>
+            <form method="POST" th:action="@{/dept/listEmps_ByDeptno}">
+                <b><font color="blue">選擇部門:</font></b>
+                <select size="1" name="deptno">
+                    <option th:each="deptVO : ${deptVOS}" th:value="${deptVO.deptno}" th:text="${deptVO.dname}"></option>
+                </select>
+                <input type="submit" value="送出">
+            </form>
+        </li>
+    </ul>
+</div>
+
+<div>
+    <h3>員工管理</h3>
+    <ul>
+        <li><a th:href="@{/emp/add}">Add</a> a new Emp.</li>
+    </ul>
+</div>
+
+<div>
+    <h3><font color=blue>部門管理</font></h3>
+    <ul>
+        <li><a th:href="@{/dept/listAll}">List</a> all Dept.</li>
+    </ul>
+</div>
+</body>
+</html>

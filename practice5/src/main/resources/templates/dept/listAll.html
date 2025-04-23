@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>所有部門</title>
+    <link rel="stylesheet" th:href="@{/css/table.css}">
+</head>
+<body>
+<h3>所有部門</h3>
+
+<div th:if="${not #lists.isEmpty(errorMsgs)}">
+    <font color="red">請修正以下錯誤:
+        <ul>
+            <li th:each="message : ${errorMsgs}" th:text="${message}"></li>
+        </ul>
+    </font>
+</div>
+
+<table>
+    <tr>
+        <th>部門編號</th>
+        <th>部門名稱</th>
+        <th>部門基地</th>
+        <th>修改</th>
+        <th>刪除<font color="red">(關聯測試)</font></th>
+        <th>查詢部門員工</th>
+    </tr>
+
+    <tr th:each="deptVO : ${deptVOS}" align="center" valign="middle">
+        <td th:text="${deptVO.deptno}"></td>
+        <td th:text="${deptVO.dname}"></td>
+        <td th:text="${deptVO.loc}"></td>
+        <td>
+            <form method="POST" th:action="@{/dept/getOne_For_Update}">
+                <input type="submit" value="修改">
+                <input type="hidden" name="deptno" th:value="${deptVO.deptno}">
+                <input type="hidden" name="action" value="getOne_For_Update_Dept">
+            </form>
+        </td>
+        <td>
+            <form method="POST" th:action="@{/dept/delete}">
+                <input type="submit" value="刪除">
+                <input type="hidden" name="deptno" th:value="${deptVO.deptno}">
+                <input type="hidden" name="action" value="delete_Dept">
+            </form>
+        </td>
+        <td>
+            <form method="POST" th:action="@{/dept/listEmps_ByDeptno}">
+                <input type="submit" value="送出查詢">
+                <input type="hidden" name="deptno" th:value="${deptVO.deptno}">
+                <input type="hidden" name="action" value="listEmps_ByDeptno_B">
+            </form>
+        </td>
+    </tr>
+</table>
+
+<br />
+
+<div th:if="${listEmps_ByDeptno != null}">
+    <div th:replace="listEmpsByDeptno :: content"></div>
+</div>
+<div th:if="${listEmps_ByDeptno == null}">
+    <br />
+    <a th:href="@{/}">回首頁</a>
+</div>
+</body>
+</html>

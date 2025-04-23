@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>員工資料修改</title>
+</head>
+<body>
+<h3>員工資料修改</h3>
+
+<div th:if="${not #lists.isEmpty(errorMsgs)}">
+    <font color="red">請修正以下錯誤:
+        <ul>
+            <li th:each="message : ${errorMsgs}" th:text="${message}"></li>
+        </ul>
+    </font>
+</div>
+
+<form method="POST" th:action="@{/emp/update}" name="form1">
+    <table>
+        <tr>
+            <td>員工編號:<font color="red"><b>*</b></font></td>
+            <td th:text="${empVO.empno}"></td>
+        </tr>
+        <tr>
+            <td>員工姓名:</td>
+            <td>
+                <input type="text" name="ename" size="45" th:value="${empVO.ename}" />
+            </td>
+        </tr>
+        <tr>
+            <td>職位:</td>
+            <td>
+                <input type="text" name="job" size="45" th:value="${empVO.job}" />
+            </td>
+        </tr>
+        <tr>
+            <td>雇用日期:</td>
+            <td>
+                <input type="date" name="hiredate" th:value="${empVO.hiredate}" />
+            </td>
+        </tr>
+        <tr>
+            <td>薪水:</td>
+            <td>
+                <input type="text" name="sal" size="45" th:value="${empVO.salary}" />
+            </td>
+        </tr>
+        <tr>
+            <td>獎金:</td>
+            <td>
+                <input type="text" name="comm" size="45" th:value="${empVO.comm}" />
+            </td>
+        </tr>
+        <tr>
+            <td>部門:<font color="red"><b>*</b></font></td>
+            <td>
+                <select size="1" name="deptno">
+                    <option th:each="deptVO : ${deptVOs}"
+                            th:value="${deptVO.deptno}"
+                            th:text="${deptVO.dname}"
+                            th:selected="${empVO.deptVO  != null and empVO.deptVO.deptno == deptVO.deptno}">
+                    </option>
+                </select>
+            </td>
+        </tr>
+    </table>
+    <br />
+    <input type="hidden" name="empno" th:value="${empVO.empno}">
+    <a th:href="@{/}">回首頁</a>
+    <input type="submit" value="送出修改">
+</form>
+</body>
+</html>
